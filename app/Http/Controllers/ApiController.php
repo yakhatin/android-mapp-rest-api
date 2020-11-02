@@ -66,22 +66,6 @@ abstract class ApiController extends Controller
     }
 
     /**
-     * Выполнить SELECT по модели
-     */
-    public function get(Request $request)
-    {
-        $queryBuilder = clone $this->model->newQuery();
-
-        $queryBuilder = ApiController::attachPagination($request, $queryBuilder);
-        $queryBuilder = ApiController::attachFilters($request, $queryBuilder);
-
-        $totalCount = $queryBuilder->count();
-        $data = $queryBuilder->get();
-
-        $this->sendResponse($data, 'Данные успешно загружены', 200, $totalCount);
-    }
-
-    /**
      * Выполнить CREATE по модели
      */
     public function create(Request $request)
@@ -102,5 +86,77 @@ abstract class ApiController extends Controller
                 return $this->sendResponse($row, 'Новая запись создана', 201);
             }
         }
+    }
+
+    /**
+     * Выполнить DELETE по модели (WHERE entity)
+     */
+    public function delete(int $entityId)
+    {
+
+        $entity = $this->model->find($entityId);
+
+        if (!$entity) {
+            return $this->sendError('Запись не найдена', 404);
+        }
+
+        $entityDeleted = $entity->delete();
+
+        if ($entityDeleted) {
+            return $this->sendResponse([], 'Запись успешно удалена', 204);
+        }
+        return $this->sendError('Произошла ошибка при удалении записи', 304);
+    }
+
+    /**
+     * Выполнить SELECT по модели (WHERE entity)
+     */
+    public function detail(int $entityId)
+    {
+        $entity = $this->model->find($entityId);
+
+        if ($this->resource) {
+            $entity = $this->resource::collection($entity);
+        }
+
+        if (!$entity) {
+            return $this->sendError('Запись не найдена', 404);
+        }
+
+        return $this->sendResponse($entity, 'Запись успешно найдена', 200);
+    }
+
+    /**
+     * Выполнить SELECT по модели
+     */
+    public function get(Request $request)
+    {
+        $queryBuilder = clone $this->model->newQuery();
+
+        $queryBuilder = ApiController::attachPagination($request, $queryBuilder);
+        $queryBuilder = ApiController::attachFilters($request, $queryBuilder);
+
+        $totalCount = $queryBuilder->count();
+        $data = $queryBuilder->get();
+
+        $this->sendResponse($data, 'Данные успешно загружены', 200, $totalCount);
+    }
+
+    /**
+     * Выполнить UPDATE по модели (WHERE entity)
+     */
+    public function update(int $entityId, Request $request)
+    {
+        $entity = $this->model->find($entityId);
+
+        if (!$entity) {
+            return $this->sendError('Запись не найдена', 404);
+        }
+
+        $data = $request->validate($this->request->updateRules, $this->request->messages());
+
+        $entity->fill($data)->save();
+
+        return $this->sendResponse($data, 'Запись успешно обновлена', 202);
     }
 }
