@@ -5,14 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Http\FormRequest;
 
 abstract class ApiController extends Controller
 {
     protected Model $model;
+    protected FormRequest $request;
+    protected $created_by_user_column;
 
-    static function attachFilters(Builder $queryBuilder, array $filters)
+    /**
+     * Привязка фильтров к БД-запросу (WHERE CLAUSE)
+     */
+    static function attachFilters(Request $request, Builder $queryBuilder)
     {
+        $filters = $request->filters;
+
         if (gettype($filters) == 'array' && count($filters) > 0) {
             foreach ($filters as $filterData) {
                 $operator = isset($filterData['operator']) ? $filterData["operator"] : "=";
@@ -39,6 +48,9 @@ abstract class ApiController extends Controller
         return $queryBuilder;
     }
 
+    /**
+     * Привязка пагинации к БД-запросу (LIMIT, OFFSET)
+     */
     static function attachPagination(Request $request, Builder $queryBuilder)
     {
         if (gettype($request->page) == 'integer' && gettype($request->limit) == 'integer') {
@@ -53,16 +65,42 @@ abstract class ApiController extends Controller
         return $queryBuilder;
     }
 
+    /**
+     * Выполнить SELECT по модели
+     */
     public function get(Request $request)
     {
         $queryBuilder = clone $this->model->newQuery();
 
         $queryBuilder = ApiController::attachPagination($request, $queryBuilder);
-        $queryBuilder = ApiController::attachFilters($queryBuilder, $request->filters);
+        $queryBuilder = ApiController::attachFilters($request, $queryBuilder);
 
         $totalCount = $queryBuilder->count();
         $data = $queryBuilder->get();
 
         $this->sendResponse($data, 'Данные успешно загружены', 200, $totalCount);
+    }
+
+    /**
+     * Выполнить CREATE по модели
+     */
+    public function create(Request $request)
+    {
+        $validated = $request->validate($this->request->rules, $this->request->messages());
+
+        if ($validated) {
+
+            if (gettype($this->created_by_user_column) == 'string') {
+                $validated[$this->created_by_user_column] = Auth::user()->id;
+            }
+
+            $row = $this->model;
+            $row->fill($validated);
+            $created = $row->save();
+
+            if ($created) {
+                return $this->sendResponse($row, 'Новая запись создана', 201);
+            }
+        }
     }
 }

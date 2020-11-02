@@ -17,3 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('/catalogs')->group(function () {
+    Route::get('/', 'CatalogsController@get');
+    Route::post('/', 'CatalogsController@create');
+    Route::delete('/{id}', 'CatalogsController@delete');
+    Route::put('/{id}', 'CatalogsController@update');
+});
