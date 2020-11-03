@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
  * Авторизация/Регистрация пользователей
  */
 Route::get('/login', 'UserController@auth');
-Route::get('/register', 'UserController@register');
+Route::post('/register', 'UserController@register');
 
 /**
  * Роуты требующие токена-авторизации
