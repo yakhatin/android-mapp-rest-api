@@ -9,11 +9,21 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Http\FormRequest;
 
+use function PHPUnit\Framework\throwException;
+
 abstract class ApiController extends Controller
 {
     protected Model $model;
     protected FormRequest $request;
     protected $created_by_user_column;
+
+    protected $accessLevels = [
+        'create' => 0,
+        'delete' => 0,
+        'detail' => 0,
+        'get' => 0,
+        'update' => 0
+    ];
 
     /**
      * Привязка фильтров к БД-запросу (WHERE CLAUSE)
@@ -65,11 +75,37 @@ abstract class ApiController extends Controller
         return $queryBuilder;
     }
 
+    private function accessDeniedMessage()
+    {
+        return $this->sendError('Доступ к данной операции запрещен', 403, []);
+    }
+
+    /**
+     * Проверка доступа к операции
+     */
+    private function checkUserAccess(string $key)
+    {
+        $user = Auth::user();
+        $userType = gettype($user) == 'object' ? $user->userType : null;
+
+        $userPrivilegieLevel = gettype($userType) == 'object' ? $userType->privilegie_level : 0;
+
+        if ($this->accessLevels[$key] > $userPrivilegieLevel) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Выполнить CREATE по модели
      */
     public function create(Request $request)
     {
+        if (!$this->checkUserAccess('create')) {
+            return $this->accessDeniedMessage();
+        }
+
         $validated = $request->validate($this->request->rules, $this->request->messages());
 
         if ($validated) {
@@ -93,6 +129,9 @@ abstract class ApiController extends Controller
      */
     public function delete(int $entityId)
     {
+        if (!$this->checkUserAccess('delete')) {
+            return $this->accessDeniedMessage();
+        }
 
         $entity = $this->model->find($entityId);
 
@@ -113,6 +152,10 @@ abstract class ApiController extends Controller
      */
     public function detail(int $entityId)
     {
+        if (!$this->checkUserAccess('detail')) {
+            return $this->accessDeniedMessage();
+        }
+
         $entity = $this->model->find($entityId);
 
         if ($this->resource) {
@@ -131,6 +174,10 @@ abstract class ApiController extends Controller
      */
     public function get(Request $request)
     {
+        if (!$this->checkUserAccess('get')) {
+            return $this->accessDeniedMessage();
+        }
+
         $queryBuilder = clone $this->model->newQuery();
 
         $queryBuilder = ApiController::attachPagination($request, $queryBuilder);
@@ -147,6 +194,10 @@ abstract class ApiController extends Controller
      */
     public function update(int $entityId, Request $request)
     {
+        if (!$this->checkUserAccess('update')) {
+            return $this->accessDeniedMessage();
+        }
+
         $entity = $this->model->find($entityId);
 
         if (!$entity) {

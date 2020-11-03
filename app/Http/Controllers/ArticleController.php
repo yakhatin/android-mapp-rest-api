@@ -12,5 +12,9 @@ class ArticleController extends ApiController
         $this->model = $model;
         $this->request = $request;
         $this->created_by_user_column = 'user_id';
+
+        $this->accessLevels['create'] = 200;
+        $this->accessLevels['update'] = 200;
+        $this->accessLevels['delete'] = 300;
     }
 }

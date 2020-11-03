@@ -12,5 +12,9 @@ class CommentaryController extends ApiController
         $this->model = $model;
         $this->request = $request;
         $this->created_by_user_column = 'user_id';
+
+        $this->accessLevels['create'] = 100;
+        $this->accessLevels['update'] = 100;
+        $this->accessLevels['delete'] = 100;
     }
 }
