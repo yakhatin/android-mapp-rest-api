@@ -30,7 +30,9 @@ class UserController extends Controller
         } else if (!Hash::check($request->password, $user->user_password)) {
             $this->sendError('Имя или пароль пользователя были введны неверно', 401, []);
         } else {
-            $token = $user->createToken('admin')->plainTextToken;
+            $userType = gettype($user->userType) == 'object' ? $user->userType->user_type_title : 'user-token';
+
+            $token = $user->createToken($userType)->plainTextToken;
             $this->sendResponse(["token" => $token], 'Авторизация прошла успешно', 200);
         }
     }
