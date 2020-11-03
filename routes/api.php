@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+/**
+ * Авторизация/Регистрация пользователей
+ */
+Route::get('/login', 'UserController@auth');
+Route::get('/register', 'UserController@register');
 
 /**
  * Роуты требующие токена-авторизации
