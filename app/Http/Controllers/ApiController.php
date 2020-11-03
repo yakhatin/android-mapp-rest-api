@@ -75,7 +75,7 @@ abstract class ApiController extends Controller
         if ($validated) {
 
             if (gettype($this->created_by_user_column) == 'string') {
-                $validated[$this->created_by_user_column] = Auth::user()->id;
+                $validated[$this->created_by_user_column] = Auth::user()->user_id;
             }
 
             $row = $this->model;
