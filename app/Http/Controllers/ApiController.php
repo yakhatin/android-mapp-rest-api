@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Http\FormRequest;
 
-use function PHPUnit\Framework\throwException;
-
 abstract class ApiController extends Controller
 {
     protected Model $model;
