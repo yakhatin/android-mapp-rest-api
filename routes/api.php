@@ -31,3 +31,10 @@ Route::prefix('/articles')->group(function () {
     Route::delete('/{id}', 'ArticleController@delete');
     Route::put('/{id}', 'ArticleController@update');
 });
+
+Route::prefix('/commentaries')->group(function () {
+    Route::get('/', 'CommentaryController@get');
+    Route::post('/', 'CommentaryController@create');
+    Route::delete('/{id}', 'CommentaryController@delete');
+    Route::put('/{id}', 'CommentaryController@update');
+});
