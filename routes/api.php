@@ -23,8 +23,12 @@ Route::post('/register', 'UserController@register');
  * Роуты без авторизации
  */
 Route::get('/catalogs', 'CatalogController@get');
-Route::get('/articles', 'ArticleController@get');
-Route::get('/commentaries', 'CommentaryController@get');
+Route::post('/commentaries', 'CommentaryController@get');
+
+Route::prefix('/articles')->group(function () {
+    Route::post('/', 'ArticleController@get');
+    Route::get('/{id}', 'ArticleController@detail');
+});
 
 /**
  * Роуты требующие токена-авторизации
@@ -37,13 +41,13 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('/articles')->group(function () {
-        Route::post('/', 'ArticleController@create');
+        Route::post('/add', 'ArticleController@create');
         Route::delete('/{id}', 'ArticleController@delete');
         Route::put('/{id}', 'ArticleController@update');
     });
 
     Route::prefix('/commentaries')->group(function () {
-        Route::post('/', 'CommentaryController@create');
+        Route::post('/add', 'CommentaryController@create');
         Route::delete('/{id}', 'CommentaryController@delete');
         Route::put('/{id}', 'CommentaryController@update');
     });

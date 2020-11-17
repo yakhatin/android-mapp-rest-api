@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentaryRequest;
+use App\Http\Resources\CommentaryResource;
 use App\Models\Commentary;
 
 class CommentaryController extends ApiController
@@ -12,6 +13,7 @@ class CommentaryController extends ApiController
         $this->model = $model;
         $this->request = $request;
         $this->created_by_user_column = 'user_id';
+        $this->resource = CommentaryResource::class;
 
         $this->accessLevels['create'] = 100;
         $this->accessLevels['update'] = 100;

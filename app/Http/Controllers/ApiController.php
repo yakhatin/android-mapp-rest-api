@@ -8,12 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 abstract class ApiController extends Controller
 {
     protected Model $model;
     protected FormRequest $request;
     protected $created_by_user_column;
+    protected $resource;
 
     protected $accessLevels = [
         'create' => 0,
@@ -68,6 +70,22 @@ abstract class ApiController extends Controller
             $queryBuilder
                 ->limit($limit)
                 ->offset($offset);
+        }
+
+        return $queryBuilder;
+    }
+
+    /**
+     * Привязка сортировок к БД-запросу
+     */
+    static function attachSorting(Request $request, Builder $queryBuilder)
+    {
+        $sorterArr = $request->sorter;
+
+        if (gettype($sorterArr) == 'array' && count($sorterArr) > 0) {
+            for ($i = 0; $i < count($sorterArr); $i += 1) {
+                $queryBuilder->orderBy($sorterArr[$i]["column"], $sorterArr[$i]["order"]);
+            }
         }
 
         return $queryBuilder;
@@ -180,9 +198,14 @@ abstract class ApiController extends Controller
 
         $queryBuilder = ApiController::attachPagination($request, $queryBuilder);
         $queryBuilder = ApiController::attachFilters($request, $queryBuilder);
+        $queryBuilder = ApiController::attachSorting($request, $queryBuilder);
 
         $totalCount = $queryBuilder->count();
         $data = $queryBuilder->get();
+
+        if ($this->resource) {
+            $data = $this->resource::collection($data);
+        }
 
         $this->sendResponse($data, 'Данные успешно загружены', 200, $totalCount);
     }
