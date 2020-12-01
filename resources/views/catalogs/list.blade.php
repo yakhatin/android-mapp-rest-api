@@ -23,8 +23,8 @@
             </tr>
         </thead>
         <tbody>
-            @if (count($list) > 0)
-                @foreach ($list as $catalog)
+            @if (count($catalogs) > 0)
+                @foreach ($catalogs as $catalog)
                     <tr>
                         <th scope="row">{{ $catalog->catalog_id }}</th>
                         <td>{{ $catalog->catalog_title }}</td>

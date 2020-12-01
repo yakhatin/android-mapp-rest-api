@@ -29,4 +29,9 @@ class Article extends Model
         'catalog_id',
         'user_id'
     ];
+
+    public function catalog()
+    {
+        return $this->belongsTo(Catalogs::class, 'catalog_id', 'catalog_id');
+    }
 }

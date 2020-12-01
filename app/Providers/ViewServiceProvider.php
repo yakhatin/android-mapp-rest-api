@@ -28,5 +28,13 @@ class ViewServiceProvider extends ServiceProvider
             'catalogs.list',
             'App\Http\View\Composers\CatalogsListComposer'
         );
+        View::composer(
+            'articles.list',
+            'App\Http\View\Composers\ArticlesListComposer'
+        );
+        View::composer(
+            'articles.create',
+            'App\Http\View\Composers\CatalogsListComposer'
+        );
     }
 }

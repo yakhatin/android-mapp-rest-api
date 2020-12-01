@@ -2,27 +2,27 @@
 
 namespace App\Http\View\Composers;
 
-use App\Models\Catalogs;
+use App\Models\Article;
 use Illuminate\View\View;
 
-class CatalogsListComposer
+class ArticlesListComposer
 {
     private $list;
 
-    private function getCatalogsList()
+    private function getArticlesList()
     {
-        $model = new Catalogs();
+        $model = new Article();
 
         return $model->all();
     }
 
     public function __construct()
     {
-        $this->list = $this->getCatalogsList();
+        $this->list = $this->getArticlesList();
     }
 
     public function compose(View $view)
     {
-        $view->with('catalogs', $this->list);
+        $view->with('articles', $this->list);
     }
 }
