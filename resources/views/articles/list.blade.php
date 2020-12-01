@@ -8,6 +8,8 @@
 
 </head>
 
+@include('cmp.header', ['page' => 'articles'])
+
 <div class="m-3">
 
     <div class="d-flex flex-row ml-0 mb-2">

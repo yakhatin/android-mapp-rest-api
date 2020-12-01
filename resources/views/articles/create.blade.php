@@ -8,6 +8,8 @@
 
 </head>
 
+@include('cmp.header')
+
 <div class="m-3">
 
     <h4>Новая статья</h4>
