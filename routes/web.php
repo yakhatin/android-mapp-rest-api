@@ -16,3 +16,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::prefix('/catalogs')->group(function () {
+    Route::get('/list', function () {
+        return view('catalogs.list');
+    });
+    Route::get('/add', function () {
+        return view('catalogs.create');
+    });
+});

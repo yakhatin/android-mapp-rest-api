@@ -12,7 +12,7 @@ class CatalogController extends ApiController
         $this->model = $model;
         $this->request = $request;
 
-        $this->accessLevels['create'] = 300;
+        $this->accessLevels['create'] = 0;
         $this->accessLevels['update'] = 300;
         $this->accessLevels['delete'] = 300;
     }
