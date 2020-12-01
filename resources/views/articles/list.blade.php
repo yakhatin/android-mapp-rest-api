@@ -38,7 +38,7 @@
                 @endforeach
             @else
                 <tr>
-                    <th class="text-center p-5" colspan="2">Список пуст</th>
+                    <th class="text-center p-5" colspan="4">Список пуст</th>
                 </tr>
             @endif
         </tbody>
