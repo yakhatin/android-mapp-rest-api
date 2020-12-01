@@ -24,4 +24,5 @@ Route::prefix('/catalogs')->group(function () {
     Route::get('/add', function () {
         return view('catalogs.create');
     });
+    Route::get('/create', 'CatalogController@createFromWeb');
 });
