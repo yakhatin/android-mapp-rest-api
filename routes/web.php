@@ -21,10 +21,15 @@ Route::prefix('/catalogs')->group(function () {
     Route::get('/list', function () {
         return view('catalogs.list');
     });
-    Route::get('/add', function () {
-        return view('catalogs.create');
+    Route::get('/form', function () {
+        return view('catalogs.form');
+    });
+    Route::get('/form/{id}', function () {
+        return view('catalogs.form');
     });
     Route::get('/create', 'CatalogController@createFromWeb');
+    Route::get('/edit/{id}', 'CatalogController@editFromWeb');
+    Route::get('/delete/{id}', 'CatalogController@deleteFromWeb');
 });
 
 Route::prefix('/articles')->group(function () {

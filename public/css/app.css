@@ -1,0 +1,11 @@
+.edit-btn {
+    background-image: url('/assets/images/edit.svg');
+    background-repeat: no-repeat;
+    padding: 8px;
+}
+
+.delete-btn {
+    background-image: url('/assets/images/delete.svg');
+    background-repeat: no-repeat;
+    padding: 8px;
+}

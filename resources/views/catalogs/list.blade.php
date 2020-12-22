@@ -6,6 +6,8 @@
 
     @include('cmp.bootstrap')
 
+    <link rel="stylesheet" href="/css/app.css" />
+
 </head>
 
 @include('cmp.header', ['page' => 'catalogs'])
@@ -14,7 +16,7 @@
 
     <div class="d-flex flex-row ml-0 mb-2">
         <h4 class="mb-0">Список каталогов</h4>
-        <a href="/catalogs/add" type="button" class="btn btn-primary btn-sm ml-2">Новый каталог</a>
+        <a href="/catalogs/form" type="button" class="btn btn-primary btn-sm ml-2">Новый каталог</a>
     </div>
 
     <table class="table">
@@ -22,6 +24,7 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Наименование каталога</th>
+                <th scope="col" style="width: 100px;"></th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +33,19 @@
                     <tr>
                         <th scope="row">{{ $catalog->catalog_id }}</th>
                         <td>{{ $catalog->catalog_title }}</td>
+                        <td>
+                            <div class="d-flex flex-row align-items-start">
+                                <a type="button" href="/catalogs/form/{{ $catalog->catalog_id }}"
+                                    class="btn btn-sm btn-outline-info mr-2">
+                                    <div class="edit-btn"></div>
+                                </a>
+                                <form method="GET" action="/catalogs/delete/{{ $catalog->catalog_id }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <div class="delete-btn"></div>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
                 @endforeach
             @else

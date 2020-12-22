@@ -32,4 +32,30 @@ class CatalogController extends ApiController
             }
         }
     }
+
+    public function editFromWeb(Request $request)
+    {
+        $entity = $this->model->find($request->id);
+
+        if ($entity) {
+            $data = $request->validate($this->request->updateRules, $this->request->messages());
+
+            $entity->fill($data)->save();
+        }
+
+        return redirect('/catalogs/form/' . $request->id);
+    }
+
+    public function deleteFromWeb($entityId)
+    {
+        $entity = $this->model->find($entityId);
+
+        if (!$entity) {
+            return $this->sendError('Запись не найдена', 404);
+        }
+
+        $entity->delete();
+
+        return redirect('/catalogs/list');
+    }
 }
