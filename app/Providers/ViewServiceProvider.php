@@ -37,8 +37,8 @@ class ViewServiceProvider extends ServiceProvider
             'App\Http\View\Composers\ArticlesListComposer'
         );
         View::composer(
-            'articles.create',
-            'App\Http\View\Composers\CatalogsListComposer'
+            'articles.form',
+            'App\Http\View\Composers\ArticleFormComposer'
         );
     }
 }

@@ -36,8 +36,13 @@ Route::prefix('/articles')->group(function () {
     Route::get('/list', function () {
         return view('articles.list');
     });
-    Route::get('/add', function () {
-        return view('articles.create');
+    Route::get('/form', function () {
+        return view('articles.form');
+    });
+    Route::get('/form/{id}', function () {
+        return view('articles.form');
     });
     Route::get('/create', 'ArticleController@createFromWeb');
+    Route::get('/edit/{id}', 'ArticleController@editFromWeb');
+    Route::get('/delete/{id}', 'ArticleController@deleteFromWeb');
 });
